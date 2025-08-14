@@ -7,15 +7,15 @@ import image2 from "../assets/SARKAR_JI/a9.jpg";
 import image6 from "../assets/SARKAR_JI/a3.jpg";
 import image7 from "../assets/SARKAR_JI/a4.jpg";
 import image8 from "../assets/SARKAR_JI/a8.jpg";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import audioFile1 from "../assets/audio/new.mp3";
-import audioFile2 from "../assets/audio/second.m4a"; // <-- add your second file here
+import audioFile2 from "../assets/audio/second.m4a";
 
 export default function ScrollTriggered() {
   const audio1 = useRef(null);
   const audio2 = useRef(null);
 
-  useEffect(() => {
+  const handlePlay = () => {
     audio1.current = new Audio(audioFile1);
     audio2.current = new Audio(audioFile2);
 
@@ -24,21 +24,38 @@ export default function ScrollTriggered() {
       audio2.current.play().catch(() => {});
     });
 
-    audio1.current.play().catch(() => {});
-
-    return () => {
-      audio1.current.pause();
-      audio1.current.currentTime = 0;
-      audio2.current.pause();
-      audio2.current.currentTime = 0;
-    };
-  }, []);
+    audio1.current.play().catch((err) => {
+      console.log("Autoplay blocked:", err);
+    });
+  };
 
   return (
-    <div style={container}>
-      {food.map(([imgSrc, hueA, hueB], i) => (
-        <Card i={i} imgSrc={imgSrc} hueA={hueA} hueB={hueB} key={i} />
-      ))}
+    <div>
+      {/* Click button to start audio */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <button
+          onClick={handlePlay}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            marginTop: "10px",
+            backgroundColor: "white",
+            color: "hotpink",
+            fontWeight: "bold",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+        >
+          Click Me To Play Audio 🙏 🎵
+        </button>
+      </div>
+
+      <div style={container}>
+        {food.map(([imgSrc, hueA, hueB], i) => (
+          <Card i={i} imgSrc={imgSrc} hueA={hueA} hueB={hueB} key={i} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -82,7 +99,6 @@ const cardVariants = {
 
 const hue = (h) => `hsl(${h}, 100%, 50%)`;
 
-// Styles
 const container = {
   margin: "0 auto",
   maxWidth: 500,
@@ -120,7 +136,6 @@ const card = {
   transformOrigin: "10% 60%",
 };
 
-// Data
 const food = [
   [image1, 340, 10],
   [image2, 20, 40],
